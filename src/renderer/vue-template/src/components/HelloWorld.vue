@@ -8,23 +8,25 @@ const pushData = ref<any>(null)
 
 let removeListener: (() => void) | undefined
 
-// 在 renderer 中使用（假设 preload 暴露了 window.electronAPI）
+// test invokes
 async function callMain() {
-  try {
-    const result = await (window as any).electronAPI.invoke('some-channel', { foo: 1 });
-    console.log('从主进程返回：', result);
-  } catch (e) {
-    console.warn('invoke 调用失败：', e)
+  /// test shell:exec
+  try{
+    // 传递命令、参数和选项
+    const result = await (window as any).electronAPI.invoke('shell:exec', 'npm -v');
+    console.log('命令执行结果:', result);
+  }catch (e) {
+    console.warn('RC 调用失败：', e);
   }
 }
 
 onMounted(() => {
   const api = (window as any).electronAPI
   if (api?.on) {
-    // 注册来自主进程的推送回调，api.on 返回一个用于移除监听的函数（在 preload 中已实现）
-    removeListener = api.on('push-from-main', (data: any) => {
-      console.log('[HelloWorld] 收到 push-from-main：', data)
-      pushData.value = data
+
+    removeListener = api.on('shell:stdout', (data: any)=>{
+      console.log('shell:stdout :', data);
+      
     })
   }
 
