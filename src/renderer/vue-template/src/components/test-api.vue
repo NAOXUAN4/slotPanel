@@ -3,17 +3,19 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 defineProps<{ msg: string }>()
 
-const count = ref(0)
-const pushData = ref<any>(null)
-
 let removeListener: (() => void) | undefined
+const inputCommand = ref('');
+
+// 在 onMounted 时再获取 DOM 引用，避免模块初始化阶段为 null
+const shellOutput = ref<HTMLElement | null>(null)
 
 // test invokes
-async function callMain() {
+async function callMain(command: string | { value?: string }) {
   /// test shell:exec
+  const cmd = typeof command === 'string' ? command : (command?.value ?? '');
   try{
     // 传递命令、参数和选项
-    const result = await (window as any).electronAPI.invoke('shell:exec', 'npm -v');
+    const result = await (window as any).electronAPI.invoke('shell:exec', cmd);
     console.log('命令执行结果:', result);
   }catch (e) {
     console.warn('RC 调用失败：', e);
@@ -26,11 +28,11 @@ onMounted(() => {
 
     removeListener = api.on('shell:stdout', (data: any)=>{
       console.log('shell:stdout :', data);
-      
+      const newchild = document.createElement('span');
+      newchild.textContent = data;
+      if (shellOutput.value) shellOutput.value.appendChild(newchild)
     })
   }
-
-  callMain()
 })
 
 onBeforeUnmount(() => {
@@ -40,14 +42,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
-
   <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
+    <input type="text" v-model="inputCommand">
+    <button @click=callMain(inputCommand)><</button>
+    <div class="shellRes" ref="shellOutput">
+    </div>
   </div>
 </template>
 

@@ -9,7 +9,10 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "start:forge": "electron-forge start",
+    "watch-main": "nodemon --watch src/main --ext ts --exec \"npm run start:forge\"",
+    "dev": "concurrently \"vite\" \"npm:watch-main\""
   },
   "keywords": [],
   "author": {
@@ -30,11 +33,13 @@
     "@types/electron-squirrel-startup": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
+    "concurrently": "^9.2.1",
     "electron": "39.2.3",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",
+    "nodemon": "^3.1.11",
     "prettier": "^3.6.2",
     "typescript": "~4.5.4",
     "vite": "^5.4.21"
