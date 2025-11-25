@@ -1,5 +1,5 @@
 import { ipcMain, BrowserWindow } from 'electron';
-import { shellExec } from './service/shell-service';
+import { shellExec, getCurrentChildProcess } from './service/shell-service';
 
 export function registerIPCHandlers(mainWindow: BrowserWindow) {
   /// --------------------------------------- invoke -----------------------------------
@@ -16,6 +16,29 @@ export function registerIPCHandlers(mainWindow: BrowserWindow) {
     const shellchild = shellExec(mainWindow, command);
 
     return { ok: true, from: 'shell:exec' };
+  });
+
+  // 处理中断命令的请求 (Ctrl+C)
+  ipcMain.handle('shell:interrupt', async () => {
+    try {
+      const child = getCurrentChildProcess();
+      if (child && !child.killed) {
+        console.log('Interrupting current command');
+        // 在Windows上，我们需要使用Ctrl+C信号
+        if (process.platform === 'win32') {
+          // 在Windows上，我们可以尝试kill命令
+          child.kill();
+        } else {
+          // 在Unix系统上，我们可以发送SIGINT信号
+          process.kill(child.pid, 'SIGINT');
+        }
+        return { ok: true, message: 'Command interrupted' };
+      }
+      return { ok: false, message: 'No active command to interrupt' };
+    } catch (error) {
+      console.error('Failed to interrupt command:', error);
+      return { ok: false, error: String(error) };
+    }
   });
 
   /// --------------------------------------- on ---------------------------------------

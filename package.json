@@ -11,7 +11,7 @@
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
     "start:forge": "electron-forge start",
-    "watch-main": "nodemon --watch src/main --ext ts --exec \"npm run start:forge\"",
+    "watch-main": "nodemon --watch src --ext ts --exec \"npm run start:forge\"",
     "dev": "concurrently \"vite\" \"npm:watch-main\""
   },
   "keywords": [],
@@ -49,6 +49,7 @@
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "electron-squirrel-startup": "^1.0.1",
+    "iconv-lite": "^0.7.0",
     "vue": "^3.5.24"
   }
 }

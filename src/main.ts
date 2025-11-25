@@ -11,8 +11,21 @@ if (started) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 1280,
     height: 600,
+    minWidth: 800,
+    minHeight: 600,
+    titleBarStyle: 'hiddenInset', // 隐藏标题和选项卡，保留右侧控制按钮（macOS 最优）
+    titleBarOverlay: {
+      color: '#ffffff', // 标题栏背景色（与窗口背景一致）
+      symbolColor: '#d31515ff', // 控制按钮颜色
+      height: 48, // 控制按钮区域高度（Windows 默认）
+    },
+    autoHideMenuBar: true, // 隐藏顶部菜单栏（避免选项卡显示）
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
+    closable: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
