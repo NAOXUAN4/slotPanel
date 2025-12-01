@@ -45,11 +45,13 @@
     "vite": "^5.4.21"
   },
   "dependencies": {
+    "@primeuix/themes": "^2.0.1",
     "@vitejs/plugin-vue": "^6.0.2",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "electron-squirrel-startup": "^1.0.1",
     "iconv-lite": "^0.7.0",
+    "primevue": "^4.5.0",
     "vue": "^3.5.24"
   }
 }

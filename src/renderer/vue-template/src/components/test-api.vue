@@ -4,8 +4,14 @@ import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
+import Button from "primevue/button"
+
 defineProps<{ msg: string }>()
 const PROMPT = '$ ';
+let _inputBuffer: string = '';  /// 自主维护 inputerBuffer, 不依赖xterm内部buffer （会被stdout冲散）
+function cleanInputerBuffer() : void {
+  _inputBuffer = '';
+}
 
 //收集销毁函数
 let removeListeners: Set<(()=> void)> = new Set();
@@ -41,7 +47,6 @@ onMounted(() => {
     }
   });
 
-
   fitAddon = new FitAddon();
   terminalInstance.loadAddon(fitAddon);
 
@@ -51,28 +56,6 @@ onMounted(() => {
 
   // 初始化提示符
   terminalInstance?.write(`\n${PROMPT}`);
-  // console.log(terminalInstance.buffer.active.cursorX, terminalInstance.buffer.active.cursorY);
-
-
-  /**
-   * 获取当前行输入
-   */
-  function getCurrentInput() {
-    const buffer = terminalInstance!.buffer.active;
-    const cursorY = buffer.cursorY;
-    const line = buffer.getLine(cursorY);
-
-    if (!line) return '';
-
-    const text = line.translateToString(); // 当前整行文本
-
-    // 去掉前面的 prompt
-    if (text.startsWith(PROMPT)) {
-      return text.slice(PROMPT.length);
-    }
-
-    return text;
-  }
 
   /**
    * ondata 处理 ctrl + C 
@@ -80,6 +63,7 @@ onMounted(() => {
   terminalInstance.onData((data) => {
     // 处理Ctrl+C (\x03)，用于中断当前命令
     if (data === '\x03') {
+      cleanInputerBuffer();
       terminalInstance?.write(`\r\n${PROMPT}`);
       try {
         (window as any).electronAPI.invoke('shell:interrupt');
@@ -89,11 +73,16 @@ onMounted(() => {
       return;
     }
     
-    // 重写Enter默认行为
+    // 过滤退格键和删除键
+    if (data === '\b' || data === '\x7f') {
+      return;
+    }
+    // 过滤Enter默认行为
     if (data === '\r' || data === '\n' || data === '\r\n') {
       return;
     }
     console.log(terminalInstance.buffer.active.cursorX, terminalInstance.buffer.active.cursorY);
+    _inputBuffer += data;  // 输入Buffer
     terminalInstance?.write(data);
   });
 
@@ -102,9 +91,12 @@ onMounted(() => {
    */
   terminalInstance.onKey(({ key, domEvent }) => {
     if (domEvent.key === 'Enter') {
+
       terminalInstance.write('\r\n')
       // 使用activeBuff变量获取用户输入的命令
-      const cmd = getCurrentInput().trim();
+      const cmd = _inputBuffer.trim();
+      cleanInputerBuffer();
+
       console.log('buff: ', cmd);
       if(cmd.length > 0){
         shellInvoke(cmd);
@@ -115,6 +107,9 @@ onMounted(() => {
     } else if (domEvent.key === 'Backspace') {
       const cursorX = terminalInstance?.buffer.active.cursorX || 0;
       if (cursorX > 2) {
+        _inputBuffer = _inputBuffer.slice(0,-1);
+        console.log('inputerBuffer: ', _inputBuffer);
+
         terminalInstance?.write('\b \b');
       } 
       domEvent.preventDefault();
@@ -151,7 +146,7 @@ onMounted(() => {
     removeListeners.add(
       api.on('shell:close', (data: any) => {
         console.log('shell:close:', data);
-        // 确保命令缓冲区已重置
+        cleanInputerBuffer();
         terminalInstance?.write(`\r\n${PROMPT}`);
     }))
   }
@@ -169,6 +164,9 @@ onBeforeUnmount(() => {
     <div id="terminal-container" style="height: 500px; width: 800px;">
       <div ref="terminalRef" id="terminal" style="height: 100%; width: 100%;"></div>
     </div>
+    <div class="button-container">
+      <Button label="Secondary" severity="secondary" />
+    </div>
   </div>
 </template>
 
@@ -180,4 +178,13 @@ onBeforeUnmount(() => {
   padding: 0;
   overflow: hidden;
 }
+
+.button-container{
+  display: flex;
+  width: 200px;
+  height: 100px;
+}
+
+
+
 </style>
