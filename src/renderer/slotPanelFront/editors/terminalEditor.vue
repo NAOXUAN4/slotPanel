@@ -6,7 +6,6 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 import Button from "primevue/button"
 
-defineProps<{ msg: string }>()
 const PROMPT = '$ ';
 
 let _inputBuffer: string = '';  /// 自主维护 inputerBuffer, 不依赖xterm内部buffer （会被stdout冲散）
