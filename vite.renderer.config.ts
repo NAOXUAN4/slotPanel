@@ -11,7 +11,7 @@ export default async () => {
       },
     },
     // 根据你的项目结构调整 root/outDir
-    root: path.resolve(__dirname, 'src/renderer/vue-template'),
+    root: path.resolve(__dirname, 'src/renderer/slotPanelFront'),
     server: { port: 5173 },
     build: {
       outDir: path.resolve(__dirname, '.vite', 'renderer'),

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import testapi from './components/test-api.vue'
+import testapi from './editors/terminalEditor.vue'
 </script>
 
 <template>
