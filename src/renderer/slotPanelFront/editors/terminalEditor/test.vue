@@ -54,6 +54,12 @@ onMounted(() => {
   fitAddon.fit();
 
 
+  const vp = terminalInstance.element.querySelector('.xterm-viewport');
+  console.log('viewport:', vp?.clientWidth, vp?.clientHeight);
+
+  console.log('rows:', terminalInstance.rows, 'cols:', terminalInstance.cols);
+
+
   // 初始化提示符
   terminalInstance?.write(`\n${PROMPT}`);
 
@@ -150,6 +156,7 @@ onMounted(() => {
         terminalInstance?.write(`\r\n${PROMPT}`);
     }))
   }
+  
 })
 
 onBeforeUnmount(() => {
@@ -161,18 +168,18 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="card">
-    <div id="terminal-container" style="height: 500px; width: 800px;">
-      <div ref="terminalRef" id="terminal" style="height: 100%; width: 100%;"></div>
-    </div>
-    <div class="button-container">
+    <!-- <div style="height: 500px; width: 800px;"> -->
+      <div ref="terminalRef" style="height: 100%; width: 100%;"></div>
+    <!-- </div> -->
+    <!-- <div class="button-container">
       <Button label="Secondary" severity="secondary" />
-    </div>
+    </div> -->
   </div>
 </template>
 
 <style scoped>
 
-@import './style.scss';
+/* @import './style.scss'; */
 
 
 

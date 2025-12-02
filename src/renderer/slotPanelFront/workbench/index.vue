@@ -44,6 +44,7 @@ import Editors from './editors/index.vue'
   .editor-container {
     grid-area: editor;
     background-color: rgb(85, 130, 255);
-    overflow: hidden;
+    overflow: auto;
+    position: relative;
   }
 </style>
