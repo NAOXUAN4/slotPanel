@@ -172,17 +172,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 
-*{
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-.button-container{
-  display: flex;
-  width: 200px;
-  height: 100px;
-}
+@import './style.scss';
 
 
 

@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import TerminalEditor from '../../editors/TerminalEditor.vue'
+import TerminalEditor from '../../editors/terminalEditor/terminalEditor.vue'
 </script>
 
 
