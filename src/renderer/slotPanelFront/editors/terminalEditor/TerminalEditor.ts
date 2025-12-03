@@ -25,6 +25,9 @@ export class TerminalEditor extends EditorPanel {
       fontFamily: 'Consolas, Monaco, "Courier New", "Microsoft YaHei", monospace',
       allowTransparency: true,
       scrollback: 1000,
+
+      111
+      222
       convertEol: true,
       theme: {
         background: 'rgba(36, 36, 36, 1)',
