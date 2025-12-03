@@ -10,13 +10,12 @@ export class TerminalEditor extends EditorPanel {
 
   #inputBuffer: string | null = null;
   #removeListeners: Set<() => void> = new Set();
-  fitAddon: FitAddon | null = null;
+  #fitAddon: FitAddon | null = null;
 
   constructor(id: string) {
     super(id, 'terminal');
   }
   create(container: HTMLElement): void {
-    //检测容器非空
     if (!container) return;
 
     this.#termInstance = new Terminal({
@@ -28,23 +27,23 @@ export class TerminalEditor extends EditorPanel {
       scrollback: 1000,
       convertEol: true,
       theme: {
-        background: '#242424',
+        background: 'rgba(36, 36, 36, 1)',
         foreground: '#ffffff',
       },
     });
 
     this.#container = container;
-    // this.#container.style.display = 'none';
     this.#inputBuffer = '';
 
-    this.fitAddon = new FitAddon();
-    this.#termInstance.loadAddon(this.fitAddon);
+    this.#fitAddon = new FitAddon();
+    this.#termInstance.loadAddon(this.#fitAddon);
 
     this.#termInstance.open(this.#container);
-    this.fitAddon.fit();
+    this.#fitAddon.fit();
+
+    this.#termInstance?.write(`\n${PROMPT}`);
 
     this.isMounted = true;
-
     this.#container.style.display = 'none';
   }
 
@@ -89,7 +88,7 @@ export class TerminalEditor extends EditorPanel {
    * 终端事件绑定
   ---------------------------*/
   private bindTerminalEvents() {
-    this.#termInstance.onData(data => {
+    const disposable_ondata = this.#termInstance.onData(data => {
       // 处理Ctrl+C (\x03)，用于中断当前命令
       if (data === '\x03') {
         this.cleanInputerBuffer();
@@ -117,10 +116,12 @@ export class TerminalEditor extends EditorPanel {
       this.#termInstance?.write(data);
     });
 
+    this.#removeListeners.add(() => disposable_ondata.dispose());
+
     /**
      * onKey 处理发送 退格
      */
-    this.#termInstance.onKey(({ key, domEvent }) => {
+    const disposable_onkey = this.#termInstance.onKey(({ key, domEvent }) => {
       if (domEvent.key === 'Enter') {
         this.#termInstance.write('\r\n');
         // 使用activeBuff变量获取用户输入的命令
@@ -138,13 +139,14 @@ export class TerminalEditor extends EditorPanel {
         const cursorX = this.#termInstance?.buffer.active.cursorX || 0;
         if (cursorX > 2) {
           this.#inputBuffer = this.#inputBuffer.slice(0, -1);
-          console.log('inputerBuffer: ', this.#inputBuffer);
+          // console.log('inputerBuffer: ', this.#inputBuffer);
 
           this.#termInstance?.write('\b \b');
         }
         domEvent.preventDefault();
       }
     });
+    this.#removeListeners.add(() => disposable_onkey.dispose());
 
     /// 阻止光标移动
     this.#termInstance.attachCustomKeyEventHandler(e => {
@@ -170,7 +172,7 @@ export class TerminalEditor extends EditorPanel {
   }
 
   fit(): void {
-    this.fitAddon.fit();
+    this.#fitAddon.fit();
   }
 
   mount(): void {
@@ -179,8 +181,6 @@ export class TerminalEditor extends EditorPanel {
     }
     this.shellOnListener();
     this.bindTerminalEvents();
-    // 初始化提示符
-    this.#termInstance?.write(`\n${PROMPT}`);
 
     this.#container.style.display = 'block';
   }

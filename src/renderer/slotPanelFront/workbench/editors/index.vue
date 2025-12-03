@@ -2,7 +2,11 @@
   <div style="height: 100%; width: 100%;">
     <!-- <TerminalEditor /> -->
     <div ref="term" id="terminal" class="terminal-editor"/>
-    <BUtton @click = "clickhandler" >tab</BUtton>
+    <div ref="term2" id="terminal2" class="terminal-editor"/>
+
+    <BUtton @click = "clickhandler(0)" >tab_1</BUtton>
+    <BUtton @click = "clickhandler(1)" >tab_2</BUtton>
+
   </div>
 </template>
 
@@ -14,27 +18,36 @@ import { TerminalEditor } from '../../editors/terminalEditor/TerminalEditor';
 // import TerminalEditor from '../../editors/terminalEditor/test.vue'
 
 const term = ref<HTMLElement | null>(null);
-let termins: TerminalEditor = null;
+const term2 = ref<HTMLElement | null>(null);
+const terms = [term, term2];
+const termlist: TerminalEditor[] = [];
 
-const ismount = ref(false);
+let termBuffer: TerminalEditor | null = null;
 
-const clickhandler = () => {
-  if(ismount.value == true){ 
-    termins.mount();
-  }else{
-    termins.unmount();
+const clickhandler = (activeTerm: number) => {
+  if(termBuffer){
+    console.log('bufferid:', termBuffer.id);
+    termBuffer.unmount();
   }
-  ismount.value = !(ismount.value);
+  if(termlist && activeTerm<termlist.length){
+    console.log(termlist);
+    
+    console.log('activeBuffer:', termlist[activeTerm].id);
+    
+    termlist[activeTerm].mount();
+    termBuffer = termlist[activeTerm];
+  }
+  
 }
 
 onMounted( async()=>{
   setTimeout(()=>{
-    termins = new TerminalEditor('term1');
-    termins.create(term.value);
-    termins!.mount();
-
+    terms.forEach((el, index)=>{
+      const tmp = new TerminalEditor(`term_${index}`);
+      tmp.create(el.value);
+      termlist.push(tmp);
+    })
   },0)
-
   
 })
 
