@@ -3,9 +3,8 @@
     <!-- <TerminalEditor /> -->
     <div ref="term" id="terminal" class="terminal-editor"/>
     <div ref="term2" id="terminal2" class="terminal-editor"/>
-
-    <BUtton @click = "clickhandler(0)" >tab_1</BUtton>
-    <BUtton @click = "clickhandler(1)" >tab_2</BUtton>
+    <Button @click = "clickhandler(0)" >tab_1</Button>
+    <Button @click = "clickhandler(1)" >tab_2</Button>
 
   </div>
 </template>
@@ -13,7 +12,6 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue'
 import { TerminalEditor } from '../../editors/terminalEditor/TerminalEditor';
-
 
 // import TerminalEditor from '../../editors/terminalEditor/test.vue'
 
