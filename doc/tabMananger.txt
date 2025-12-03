@@ -1,0 +1,6 @@
+不控制editor的实例化？ 只调用实例的 mount / unmount 方法控制？
+实例化（create）需要拿到contrainer 的 dom， 这个dom很容易在Workbench的Editor模块的 拿到/加入， 在叉叉的时候销毁？/但是这和tabManage的逻辑就不在一起了
+如果要做tab 上有个加号那种浏览器创建新标签页的方法，有没有办法解决这个矛盾？
+
+A: 在tab 和 editor 具体实例当中加一个中间层 editorSession， tab创建创建新标签的时候创建一个session实例， session实例中只初步创建terminaleditor
+实例，不create， 不挂载。 作为API 引出去， 在第一次mount的时候 获取dom 进行创建，挂载

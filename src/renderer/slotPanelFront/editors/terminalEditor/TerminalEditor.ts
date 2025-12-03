@@ -1,6 +1,6 @@
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
-import { EditorPanel } from '../../core/editor/EditorPanel';
+import { EditorPanel } from '../../core/models/editor/EditorPanelAbstract';
 
 const PROMPT = '$ ';
 
