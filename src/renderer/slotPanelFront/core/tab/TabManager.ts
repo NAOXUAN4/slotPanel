@@ -2,15 +2,15 @@ import { EditorSession } from '../editor/EditorSession';
 import type { EditorSessionType } from '../models/editor/EditorTypes';
 
 class TabManager {
-  #tabHistory: string[] | null = null;
-  #tabs: EditorSession[] | null = null;
+  #tabHistory: string[] | null = [];
+  #tabs: EditorSession[] | null = [];
   #activeId: string | null = null;
 
   /**
    * tab中创建Editor
    * @param type EditorSessionType
    */
-  createNewEditor(type: EditorSessionType, sessionContainer: HTMLElement) {
+  createNewEditor(type: EditorSessionType) {
     const newsession = new EditorSession(type);
     this.#tabs.push(newsession);
     this.activeById(newsession.id); //打开即激活
@@ -24,8 +24,6 @@ class TabManager {
     const preSession = this.getSessionById(this.#activeId);
     if (id != this.#activeId && preSession != null) {
       // 被创建过且不是当前
-      // unmount原本的
-      preSession.unmount();
       this.activeById(id);
     }
   }
@@ -45,10 +43,6 @@ class TabManager {
     this.#tabs.splice(index, 1);
   }
 
-  get activeId() {
-    return this.#activeId;
-  }
-
   /**
    * 统一处理激活情况
    * @param id string
@@ -61,11 +55,15 @@ class TabManager {
   }
 
   /**
-   *
+   * 根据id查找Session
    * @param id
    * @returns
    */
   getSessionById(id: string | null): EditorSession | undefined {
     return this.#tabs.find(tab => tab.id === id);
+  }
+
+  get activeId() {
+    return this.#activeId;
   }
 }
