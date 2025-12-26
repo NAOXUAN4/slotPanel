@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite';
 import path from 'node:path';
+import tailwindcss from '@tailwindcss/vite';
 
 export default async () => {
   const { default: vue } = await import('@vitejs/plugin-vue');
   return defineConfig({
-    plugins: [vue()],
+    plugins: [vue(), tailwindcss()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),

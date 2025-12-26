@@ -1,7 +1,7 @@
 import { EditorSession } from '../editor/EditorSession';
 import type { EditorSessionType } from '../models/editor/EditorTypes';
 
-class TabManager {
+export class TabManager {
   #tabHistory: string[] | null = [];
   #tabs: EditorSession[] | null = [];
   #activeId: string | null = null;
@@ -13,8 +13,9 @@ class TabManager {
   createNewEditor(type: EditorSessionType) {
     const newsession = new EditorSession(type);
     this.#tabs.push(newsession);
-    this.activeById(newsession.id); //打开即激活
+    this.#activeById(newsession.id); //打开即激活
     this.switchToById(this.#activeId);
+    return newsession;
   }
 
   /**
@@ -24,7 +25,7 @@ class TabManager {
     const preSession = this.getSessionById(this.#activeId);
     if (id != this.#activeId && preSession != null) {
       // 被创建过且不是当前
-      this.activeById(id);
+      this.#activeById(id);
     }
   }
 
@@ -37,7 +38,7 @@ class TabManager {
 
     if (this.#activeId === id) {
       this.#tabHistory.splice(-1);
-      this.activeById(this.#tabHistory.at(-1));
+      this.#activeById(this.#tabHistory.at(-1));
       //TODO: 没有考虑全部关闭的情况
     }
     this.#tabs.splice(index, 1);
@@ -47,7 +48,7 @@ class TabManager {
    * 统一处理激活情况
    * @param id string
    */
-  activeById(id: string) {
+  #activeById(id: string) {
     this.#activeId = id;
     const i = this.#tabHistory.findIndex(el => el == id); // 如果存在则重新入队
     if (i != -1) this.#tabHistory.splice(i, 1);

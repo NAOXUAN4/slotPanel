@@ -7,16 +7,44 @@
       <tabs />
     </div>
     <div class="editor-container">
-      <editors />
+      <editors :active-tab-id="activeId" :editor-sessions="editorSessions" />
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import Tabs from './tabs/index.vue'
+<script setup lang="ts"> 
 import SideBar from './sideBar/index.vue'
 import Editors from './editors/index.vue'
+
+
+import { TabManager } from '../core/tab/TabManager'
+import { EditorSession } from '../core/editor/EditorSession'
+import { nextTick, onMounted, ref, markRaw } from 'vue'
+
+const activeId = ref<string | null>(null);
+const editorSessions = ref<EditorSession[]>([]);
+
+onMounted(async() => {
+  console.log('workbench mounted')
+  await nextTick()
+  const tabManagerIns: TabManager = new TabManager()
+  editorSessions.value.push(markRaw(tabManagerIns.createNewEditor('Terminal')));
+  editorSessions.value.push(markRaw(tabManagerIns.createNewEditor('Terminal')));
+  editorSessions.value.push(markRaw(tabManagerIns.createNewEditor('Terminal')));
+  activeId.value = tabManagerIns.activeId;
+  console.log(editorSessions.value);
+  
+
+  // setTimeout(()=>{
+  //   tabManagerIns.switchToById(sessions.value[0].id);
+  //   activeId.value = tabManagerIns.activeId;
+  // },1000)
+
+})
+
 </script>
+
+
 
 <style scoped>
   .workbench-container {

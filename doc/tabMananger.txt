@@ -4,3 +4,6 @@
 
 A: 在tab 和 editor 具体实例当中加一个中间层 editorSession， tab创建创建新标签的时候创建一个session实例， session实例中只初步创建terminaleditor
 实例，不create， 不挂载。 作为API 引出去， 在第一次mount的时候 获取dom 进行创建，挂载
+
+^😖😖 是这样的，雷霆架构只能说。 在创建的时候制作一堆没有挂载到父类的 editor session（因为这个地方也拿不到editor那一块的dom）， 然后再传到 editorvue 里面去挂载。
+（需要注意的知识点有 ： 响应式代理后的类里面的函数不再认为可以访问私有变量（逆天），因此需要markRaw）

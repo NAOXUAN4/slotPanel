@@ -1,8 +1,14 @@
 <template>
-  <div class="tabs-container">
-    <div class="tabs">
-      tabs
+  <div class="h-full pl-2 bg-[rgba(18,44,93,0.90)] flex gap-0.5 overflow-auto">
+    <div v-for="item in 3" class="h-full pl-2 bg-white/20 backdrop-blur-sm w-40 min-w-40 flex justify-center items-center cursor-pointer">
+      <div class="tab-text min-w-20 p-5 flex justify-center">{{item}}</div>
+      <div class="del-sign-container  w-20 flex justify-end pr-1">✖️</div>
     </div>
+
+    <div class="add-sign h-full w-10  flex bg-white/20 backdrop-blur-sm justify-center items-center cursor-pointer">
+      +
+    </div>
+
   </div>
 </template>
 
@@ -14,16 +20,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-  .tabs-container {
-    height: 100%;
-    line-height: 100%;
-    padding-left: 2%;
-    background-color: rgb(255, 85, 85);
-  }
-  .tabs {
-    height: 100%;
-    line-height: 100%;
-    padding-left: 2%;
-    background-color: rgb(255, 85, 85);
-  }
 </style>
