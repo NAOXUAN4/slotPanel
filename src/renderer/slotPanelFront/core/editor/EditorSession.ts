@@ -31,8 +31,10 @@ export class EditorSession {
 
   mount(container: HTMLElement) {
     if (container) {
-      this.#container = container;
-      this.#editorInstance.create(container);
+      if (this.#container !== container || !this.#editorInstance) {
+        this.#container = container;
+        this.#editorInstance.create(container);
+      }
       this.#editorInstance.mount();
     }
   }
