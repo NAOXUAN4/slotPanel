@@ -1,15 +1,14 @@
 <template>
   <div style="height: 100%; width: 100%;">
-    <Button @click = "clickhandler(0)" >tab_1</Button>
+    <!-- <Button @click = "clickhandler(0)" >tab_1</Button>
     <Button @click = "clickhandler(1)" >tab_2</Button>
-    <Button @click = "clickhandler(2)" >tab_2</Button>
+    <Button @click = "clickhandler(2)" >tab_2</Button> -->
 
     <!-- <TerminalEditor /> -->
     <div
       v-for="(_, index) in termlist" 
       :key="index"
-      :ref="(el)=> setRef(el, index)"  
-      ref=""
+      :ref="(el)=> setRef(el, index)"
       class="terminal-editor"
     />
   </div>
@@ -18,20 +17,18 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref,watch, type Ref } from 'vue'
 import { TerminalEditor } from '../../editors/terminalEditor/TerminalEditor';
-import { session } from 'electron';
 import { EditorSession } from '../../core/editor/EditorSession';
 
-const props = defineProps({
-  activeTabId: String,
-  editorSessions: Array<EditorSession>
-})
-
+import { useSessionStore } from '../../store/sessionStore';
 
 // import TerminalEditor from '../../editors/terminalEditor/test.vue'
 
+const sessionStore = useSessionStore();
+const editorSessions = sessionStore.editorSessions;
+const activeSessionId = sessionStore.activeSessionId;
+
 const termRefs = ref<HTMLElement[]>([])
-const sessionIns = ref<number[] | null>(null)
-const termlist: Ref<EditorSession[] | null> = ref(null);
+const termlist: Ref<EditorSession[]> = ref([]);
 
 
 const setRef = (el: HTMLElement | null, index: number) => {
@@ -44,22 +41,30 @@ const setRef = (el: HTMLElement | null, index: number) => {
 
 
 
-watch(()=>props.editorSessions, (newVal)=>{
-  console.log('edidtorSessions changed:', newVal);
-  setTimeout(()=>{
-    // 其实以 props 传入的 sessions 为索引，但是这里为了测试，直接用 terms 数组来创建终端，因为数量是对应的
-    // terms.forEach((el, index)=>{
-    //   console.log(props.editorSessions[index]);
-    //   props.editorSessions[index].mount(el.value!);
-    //   // termlist.push(tmp);
-    // })
-    termlist.value = [...props.editorSessions];
-
-    // props.editorSessions[0].mount(terms[0].value)
-  },0)
+watch(()=>editorSessions, async(newVal)=>{
+  // console.log('editorSessions changed:', newVal);
+  termlist.value = [...newVal];
 }, { deep: true })
 
 let termBuffer: EditorSession | null = null;
+
+watch(()=>sessionStore.activeSessionId, (newVal)=>{
+  // console.log('activeSessionId changed:', newVal);
+
+  nextTick(() => {
+    if(termBuffer != null){
+      termBuffer.unmount()
+    }
+    const activeIndex = termlist.value.findIndex(session => session.id === newVal);
+    
+    if(activeIndex !== -1 && termRefs.value[activeIndex]) {
+      termlist.value[activeIndex].mount(termRefs.value[activeIndex]);
+      termBuffer = termlist.value[activeIndex]
+    } else {
+      console.log('Failed to mount terminal: either activeIndex is invalid or termRef not ready');
+    }
+  });
+}, {deep: true})
 
 const clickhandler = (activeTerm: number) => {
   if(termBuffer != null){
@@ -68,47 +73,6 @@ const clickhandler = (activeTerm: number) => {
   termlist.value[activeTerm].mount(termRefs.value[activeTerm]);
   termBuffer = termlist.value[activeTerm]
 }
-
-
-
-
-// watch(()=>props.activeTabId, (newVal)=>{
-//   console.log('activeTabId changed:', newVal);
-// })
-
-// const termRef = ref<HTMLElement | null>(null);
-// const termRef1 = ref<HTMLElement | null>(null);
-
-
-// const termlist: Ref<EditorSession[] | null> = ref(null);
-
-// let termBuffer: EditorSession | null = null;
-
-
-// let clickhandler = (v: number) => {
-//   if(termBuffer != null){
-//       termBuffer.unmount();
-//   }
-
-//   if(v === 0){
-//     console.log('0 mount');
-//     props.editorSessions[0].mount(termRef.value);
-//     termBuffer = props.editorSessions[0]
-
-//   }else{
-//     console.log('1 mount');
-
-//     props.editorSessions[1].mount(termRef1.value);
-//     termBuffer = props.editorSessions[1]
-//   }
-
-// }
-
-// let termBuffer: TerminalEditor | null = null;
-
-
-
-
 
 onMounted(async()=>{
 
