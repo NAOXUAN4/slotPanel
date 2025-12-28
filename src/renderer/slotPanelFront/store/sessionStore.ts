@@ -31,6 +31,10 @@ export const useSessionStore = defineStore('sessionStore', () => {
     // console.log(sessionId);
   };
 
+  const getActiveSessionId = () => {
+    return activeSessionId.value;
+  };
+
   return {
     // 状态
     activeSessionId,
@@ -42,5 +46,6 @@ export const useSessionStore = defineStore('sessionStore', () => {
     // 操作
     createSession,
     switchSession,
+    getActiveSessionId,
   };
 });

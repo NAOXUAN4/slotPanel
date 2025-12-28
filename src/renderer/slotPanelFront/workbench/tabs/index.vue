@@ -1,43 +1,67 @@
 <template>
-  <div class="h-full pl-2 bg-[rgba(18,44,93,0.90)] flex gap-0.5 overflow-auto">
-    <div v-for="(tabID, index) in tabList" @click="activeTab(tabID)"  :id="tabID" class="h-full pl-2 bg-white/20 backdrop-blur-sm w-40 min-w-40 flex justify-center items-center cursor-pointer">
-      {{index}}
-      <div class="del-sign-container  w-20 flex justify-end pr-1">✖️</div>
+  <div class="flex h-full gap-0.5 overflow-hidden border-t border-b border-white/40 pt-1! pl-1!">
+    <div
+      v-for="(tabID, index) in tabList"
+      @click="activeTab(tabID)"
+      :id="tabID"
+      class="relative flex h-full min-w-30 cursor-pointer items-center justify-center overflow-hidden rounded-t-xl pt-1.5! pl-4! transition-all duration-500 select-none"
+      :class="
+        currentActiveTab === tabID
+          ? 'min-w-40 border border-white/40 bg-white/40 font-bold text-[#002FA7] shadow-sm'
+          : 'min-w-30 border border-white/0 bg-white/0 opacity-50'
+      "
+    >
+      <Terminal :size="20" class="transition-colors" />
+      <span class="truncate pl-3!" :class="currentActiveTab === tabID ? 'pr-10!' : 'pr-4!'"
+        >terminal_{{ index }}</span
+      >
+      <X
+        v-if="currentActiveTab === tabID"
+        :size="16"
+        class="absolute right-2 opacity-50 transition-colors hover:text-red-500 hover:opacity-100"
+      />
     </div>
 
-    <div @click="createTab" class="add-sign h-full w-10  flex bg-white/20 backdrop-blur-sm justify-center items-center cursor-pointer">
-      +
+    <div
+      @click="createTab"
+      class="add-sign flex h-full w-10 cursor-pointer items-center justify-center bg-transparent pt-1!"
+    >
+      <Plus :size="16" class="opacity-50 transition-colors" />
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
-  import { onMounted, computed } from 'vue'
-  import { useSessionStore } from '../../store/sessionStore'
+import { onMounted, computed, ref } from 'vue';
+import { useSessionStore } from '../../store/sessionStore';
+import { Terminal, Plus, X } from 'lucide-vue-next';
 
-  const { createSession, switchSession, editorSessions } = useSessionStore()
+const { createSession, switchSession, editorSessions, getActiveSessionId } = useSessionStore();
 
-  onMounted(() => {
-    console.log('tabs mounted')
-  })
+onMounted(() => {
+  console.log('tabs mounted');
+});
 
-  // 使用计算属性从store获取tabList
-  const tabList = computed(() => editorSessions.map(session => session.id))
+const tabList = computed(() => editorSessions.map(session => session.id));
+const currentActiveTab = ref<string>('');
 
-  /**
-   * 创建 tab 调用创建tab api
-   */
-  const createTab = async() => {
-    createSession('Terminal');
-  }
+const syncActiveId = () => {
+  currentActiveTab.value = getActiveSessionId();
+};
 
-  const activeTab = (tab_id: string) => {
-    // console.log(tabList.value);
-    switchSession(tab_id);
-  }
+/**
+ * 创建 tab 调用创建tab api
+ */
+const createTab = async () => {
+  createSession('Terminal');
+  syncActiveId();
+};
 
+const activeTab = (tab_id: string) => {
+  // console.log(tabList.value);
+  switchSession(tab_id);
+  syncActiveId();
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

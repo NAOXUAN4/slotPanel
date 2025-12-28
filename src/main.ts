@@ -22,6 +22,10 @@ const createWindow = () => {
       height: 48, // 控制按钮区域高度（Windows 默认）
     },
     autoHideMenuBar: true, // 隐藏顶部菜单栏（避免选项卡显示）
+    frame: false,
+    // visualEffectState: 'active',
+    // backgroundMaterial: 'acrylic',
+    hasShadow: true,
     resizable: true,
     minimizable: true,
     maximizable: true,
