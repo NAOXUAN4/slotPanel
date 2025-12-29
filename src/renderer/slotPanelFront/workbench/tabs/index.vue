@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full gap-0.5 overflow-hidden border-t border-b border-white/40 pt-1! pl-1!">
+  <div class="flex h-full gap-0.5 overflow-hidden border-t border-b border-white/20 pt-2!">
     <div
       v-for="(tabID, index) in tabList"
       @click="activeTab(tabID)"
@@ -7,14 +7,14 @@
       class="relative flex h-full min-w-30 cursor-pointer items-center justify-center overflow-hidden rounded-t-xl pt-1.5! pl-4! transition-all duration-500 select-none"
       :class="
         currentActiveTab === tabID
-          ? 'min-w-40 border border-white/40 bg-white/40 font-bold text-[#002FA7] shadow-sm'
+          ? 'min-w-40 border border-white/20 bg-white/40 text-[#002FA7] shadow-sm'
           : 'min-w-30 border border-white/0 bg-white/0 opacity-50'
       "
     >
       <Terminal :size="20" class="transition-colors" />
       <span class="truncate pl-3!" :class="currentActiveTab === tabID ? 'pr-10!' : 'pr-4!'"
-        >terminal_{{ index }}</span
-      >
+        >terminal_{{ index }}
+      </span>
       <X
         v-if="currentActiveTab === tabID"
         :size="16"

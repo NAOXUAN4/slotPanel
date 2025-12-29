@@ -1,5 +1,5 @@
 <template>
-  <div class="side-bar flex h-full flex-col items-center gap-0.5 border border-white/40 pt-2">
+  <div class="side-bar flex h-full flex-col items-center gap-0.5 border border-white/20 pt-2">
     <div
       v-for="item in 5"
       :key="item"
