@@ -41,6 +41,26 @@ export function registerIPCHandlers(mainWindow: BrowserWindow) {
     }
   });
 
+  /**
+   *
+   */
+  ipcMain.handle('sys:closeWindow', async (_event, command: string) => {
+    // TODO : 关闭
+    return { ok: true, from: 'shell:exec' };
+  });
+
+  ipcMain.handle('sys:maximizeWindow', async (_event, command: string) => {
+    // TODO : 最小化
+
+    return { ok: true, from: 'sys:maximizeWindow' };
+  });
+
+  ipcMain.handle('sys:minimizeWindow', async (_event, command: string) => {
+    // TODO : 最大化
+
+    return { ok: true, from: 'sys:minimizeWindow' };
+  });
+
   /// --------------------------------------- on ---------------------------------------
 
   // 当渲染器加载完毕，发送一次测试消息（渲染器会订阅 `push-from-main`）

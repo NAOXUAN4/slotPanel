@@ -15,9 +15,9 @@ import Workbench from './workbench/index.vue';
       <div
         class="title-bar-btn op flex w-1/4 justify-end gap-6 pt-1! pr-5! text-[#002FA7] opacity-60"
       >
-        <Minus :size="20" class="btn-close"></Minus>
-        <Square :size="18" class="btn-maximize pt-0.75!"></Square>
-        <X :size="20" class="btn-shut hover:opacity-100"></X>
+        <Minus :size="20"></Minus>
+        <Square :size="18" class="pt-0.75!"></Square>
+        <X :size="20" class="hover:opacity-100"></X>
       </div>
     </div>
     <div class="body-bar relative flex-1 overflow-hidden">
