@@ -13,9 +13,13 @@
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+
   "editor.detectIndentation": true,
   "editor.renderWhitespace": "boundary",
   "prettier.configPath": ".prettierrc"

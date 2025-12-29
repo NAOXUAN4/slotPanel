@@ -44,21 +44,27 @@ export function registerIPCHandlers(mainWindow: BrowserWindow) {
   /**
    *
    */
-  ipcMain.handle('sys:closeWindow', async (_event, command: string) => {
+  ipcMain.handle('sys:closeWindow', async () => {
     // TODO : 关闭
-    return { ok: true, from: 'shell:exec' };
+    mainWindow.close();
+    return { ok: true, status: 'close', from: 'shell:exec' };
   });
 
-  ipcMain.handle('sys:maximizeWindow', async (_event, command: string) => {
-    // TODO : 最小化
-
-    return { ok: true, from: 'sys:maximizeWindow' };
-  });
-
-  ipcMain.handle('sys:minimizeWindow', async (_event, command: string) => {
+  ipcMain.handle('sys:maximizeWindow', async () => {
     // TODO : 最大化
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+      return { ok: true, status: 'unmaximize', from: 'sys:maximizeWindow' };
+    } else {
+      mainWindow.maximize();
+      return { ok: true, status: 'maximize', from: 'sys:maximizeWindow' };
+    }
+  });
 
-    return { ok: true, from: 'sys:minimizeWindow' };
+  ipcMain.handle('sys:minimizeWindow', async () => {
+    // TODO : 最小化
+    mainWindow.minimize();
+    return { ok: true, status: 'minimize', from: 'sys:minimizeWindow' };
   });
 
   /// --------------------------------------- on ---------------------------------------

@@ -1,7 +1,28 @@
 <script setup lang="ts">
 // import testapi from './editors/terminalEditor/terminalEditor.vue'
-import { X, Minus, Square } from 'lucide-vue-next';
+import { X, Minus, Square, SquareStack } from 'lucide-vue-next';
 import Workbench from './workbench/index.vue';
+import { windowCommandType } from './types/window-types';
+import { ref } from 'vue';
+
+const windowIsMaximize = ref<boolean>(false);
+
+const windowBtnHandler = async (state: windowCommandType) => {
+  switch (state) {
+    case 'maximize':
+      const tmp = await (window as any).electronAPI.invoke('sys:maximizeWindow');
+      windowIsMaximize.value = tmp.status === 'maximize' ? true : false;
+      break;
+    case 'minimize':
+      await (window as any).electronAPI.invoke('sys:minimizeWindow');
+      break;
+    case 'close':
+      await (window as any).electronAPI.invoke('sys:closeWindow');
+      break;
+    default:
+      break;
+  }
+};
 </script>
 
 <template>
@@ -11,13 +32,24 @@ import Workbench from './workbench/index.vue';
     <div
       class="title-bar drag-region flex h-10 w-full items-center justify-between border-white/20 bg-white/0 px-4 py-3 font-mono transition-all duration-300 select-none"
     >
-      <div class="title-bar-title flex w-3/4 justify-end"></div>
+      <div class="title-bar-title flex w-7/8 justify-end"></div>
       <div
-        class="title-bar-btn op flex w-1/4 justify-end gap-6 pt-1! pr-5! text-[#002FA7] opacity-60"
+        class="title-bar-btn no-drag flex w-1/8 justify-end gap-6 pt-1! pr-5! text-[#002FA7] opacity-60"
       >
-        <Minus :size="20"></Minus>
-        <Square :size="18" class="pt-0.75!"></Square>
-        <X :size="20" class="hover:opacity-100"></X>
+        <Minus :size="20" @click="windowBtnHandler('minimize')"></Minus>
+        <Square
+          v-if="!windowIsMaximize"
+          :size="18"
+          class="pt-0.75!"
+          @click="windowBtnHandler('maximize')"
+        ></Square>
+        <SquareStack
+          v-if="windowIsMaximize"
+          :size="18"
+          class="pt-0.75!"
+          @click="windowBtnHandler('maximize')"
+        ></SquareStack>
+        <X :size="20" class="hover:opacity-100" @click="windowBtnHandler('close')"></X>
       </div>
     </div>
     <div class="body-bar relative flex-1 overflow-hidden">
@@ -36,5 +68,9 @@ import Workbench from './workbench/index.vue';
 <style>
 .drag-region {
   -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
 }
 </style>
