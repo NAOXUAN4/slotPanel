@@ -4,11 +4,11 @@
       v-for="(tabID, index) in tabList"
       @click="activeTab(tabID)"
       :id="tabID"
-      class="relative flex h-full min-w-30 cursor-pointer items-center justify-center overflow-hidden rounded-t-xl pt-1.5! pl-4! transition-all duration-500 select-none"
+      class="relative flex h-full min-w-30 cursor-pointer items-center justify-center overflow-hidden rounded-t-xl pt-1.5! pl-4! transition-all duration-200 select-none"
       :class="
         currentActiveTab === tabID
-          ? 'min-w-40 border border-white/20 bg-white/40 text-[#002FA7] shadow-sm'
-          : 'min-w-30 border border-white/0 bg-white/0 opacity-50'
+          ? 'min-w-60 border-x border-white/20 bg-white/40 text-[#002FA7] shadow-sm'
+          : 'text-text-muted min-w-40 border border-white/0 bg-white/0 opacity-50'
       "
     >
       <Terminal :size="20" class="transition-colors" />
@@ -24,9 +24,9 @@
 
     <div
       @click="createTab"
-      class="add-sign flex h-full w-10 cursor-pointer items-center justify-center bg-transparent pt-1!"
+      class="add-sign group text-text-brand/40 flex h-full w-16 cursor-pointer items-center justify-center rounded-t-xl bg-transparent pt-1! hover:bg-white/40"
     >
-      <Plus :size="16" class="opacity-50 transition-colors" />
+      <Plus :size="16" class="group-hover:text-text-brand" />
     </div>
   </div>
 </template>
