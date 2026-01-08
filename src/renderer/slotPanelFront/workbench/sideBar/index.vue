@@ -4,6 +4,7 @@
   >
     <div
       class="side-bar-item flex h-10 w-full cursor-pointer items-center justify-center rounded-lg"
+      @click="wamTest"
     >
       <Gamepad class="text-text-brand size-6 stroke-[1.5px] opacity-60" />
     </div>
@@ -43,9 +44,15 @@ import { AlarmClock } from 'lucide-vue-next';
 import { Clipboard } from 'lucide-vue-next';
 import { Carrot } from 'lucide-vue-next';
 import { Gamepad } from 'lucide-vue-next';
+
 onMounted(() => {
   console.log('side bar mounted');
 });
+
+async function wamTest() {
+  const res = await window.electronAPI.invoke('cppCalc', { a: 4, b: 4 });
+  console.log(res);
+}
 </script>
 
 <style scoped></style>

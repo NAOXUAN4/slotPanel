@@ -1,6 +1,9 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { shellExec, getCurrentChildProcess } from './service/shell-service';
 
+import { Worker } from 'worker_threads';
+import path = require('path');
+
 export function registerIPCHandlers(mainWindow: BrowserWindow) {
   /// --------------------------------------- invoke -----------------------------------
 
@@ -42,7 +45,7 @@ export function registerIPCHandlers(mainWindow: BrowserWindow) {
   });
 
   /**
-   *
+   * window操作
    */
   ipcMain.handle('sys:closeWindow', async () => {
     // TODO : 关闭
@@ -65,6 +68,31 @@ export function registerIPCHandlers(mainWindow: BrowserWindow) {
     // TODO : 最小化
     mainWindow.minimize();
     return { ok: true, status: 'minimize', from: 'sys:minimizeWindow' };
+  });
+
+  /**
+   * wasm计算
+   */
+  ipcMain.handle('cppCalc', async (event, args) => {
+    return new Promise((resolve, reject) => {
+      const workerPath = path.join(__dirname, 'worker.js');
+      const worker = new Worker(workerPath);
+      worker.on('message', msg => {
+        if (msg.status === 'ready') {
+          worker.postMessage({ type: 'CAL', payload: { x: args.a, y: args.b } });
+        } else if (msg.status === 'success') {
+          resolve({ ok: true, payload: msg.result });
+          worker.terminate();
+        } else if (msg.status === 'error') {
+          reject(msg.error);
+          worker.terminate();
+        }
+      });
+      worker.on('error', err => {
+        reject(err);
+        worker.terminate();
+      });
+    });
   });
 
   /// --------------------------------------- on ---------------------------------------
