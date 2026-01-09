@@ -1,3 +1,4 @@
+import { ExtensionEditor } from '../../editors/ExtensionEditor/ExtensionEditor';
 import { TerminalEditor } from '../../editors/terminalEditor/TerminalEditor';
 import { EditorPanel } from '../models/editor/EditorPanelAbstract';
 import type { EditorSessionType } from '../models/editor/EditorTypes';
@@ -9,7 +10,7 @@ export class EditorSession {
   #container: HTMLElement | null = null;
   #editorInstance: EditorPanel | null = null;
 
-  constructor(type: EditorSessionType) {
+  constructor(type: EditorSessionType, args?: Record<string, any>) {
     this.#type = type;
     this.#id = crypto.randomUUID();
 
@@ -18,6 +19,10 @@ export class EditorSession {
     } else if (type == 'WebView') {
       //TODO: WebViewInstance
       console.log('WebViewInstance');
+    } else if (type == 'Extension') {
+      //TODO: ExtensionInstance
+      this.#editorInstance = new ExtensionEditor(this.#id, args.component, args.props);
+      console.log('ExtensionInstance');
     }
   }
 

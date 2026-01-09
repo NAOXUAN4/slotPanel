@@ -2,6 +2,7 @@
   <div class="flex h-full gap-0.5 overflow-hidden border-t border-b border-white/20 pt-2!">
     <div
       v-for="(tabID, index) in tabList"
+      :key="tabID"
       @click="activeTab(tabID)"
       :id="tabID"
       class="relative flex h-full min-w-30 cursor-pointer items-center justify-center overflow-hidden rounded-t-xl pt-1.5! pl-4! transition-all duration-200 select-none"
@@ -23,7 +24,7 @@
     </div>
 
     <div
-      @click="createTab"
+      @click="createTab('Terminal')"
       class="add-sign group text-text-brand/40 flex h-full w-16 cursor-pointer items-center justify-center rounded-t-xl bg-transparent pt-1! hover:bg-white/40"
     >
       <Plus :size="16" class="group-hover:text-text-brand" />
@@ -32,36 +33,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, ref } from 'vue';
-import { useSessionStore } from '../../store/sessionStore';
 import { Terminal, Plus, X } from 'lucide-vue-next';
+import { useTabStore } from '../../store/useTabStore';
+import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
 
-const { createSession, switchSession, editorSessions, getActiveSessionId } = useSessionStore();
+const tabStore = useTabStore();
 
+const { currentActiveTab, tabList } = storeToRefs(tabStore);
+const { createTab, activeTab, init } = tabStore;
+
+// 初始化
 onMounted(() => {
-  console.log('tabs mounted');
+  init();
 });
-
-const tabList = computed(() => editorSessions.map(session => session.id));
-const currentActiveTab = ref<string>('');
-
-const syncActiveId = () => {
-  currentActiveTab.value = getActiveSessionId();
-};
-
-/**
- * 创建 tab 调用创建tab api
- */
-const createTab = async () => {
-  createSession('Terminal');
-  syncActiveId();
-};
-
-const activeTab = (tab_id: string) => {
-  // console.log(tabList.value);
-  switchSession(tab_id);
-  syncActiveId();
-};
 </script>
-
-<style scoped></style>

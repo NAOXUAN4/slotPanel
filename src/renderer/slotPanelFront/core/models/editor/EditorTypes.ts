@@ -1,1 +1,1 @@
-export type EditorSessionType = 'Terminal' | 'WebView';
+export type EditorSessionType = 'Terminal' | 'WebView' | 'Extension';

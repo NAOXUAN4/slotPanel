@@ -45,13 +45,17 @@ import { Clipboard } from 'lucide-vue-next';
 import { Carrot } from 'lucide-vue-next';
 import { Gamepad } from 'lucide-vue-next';
 
+import { useTabStore } from '../../store/useTabStore';
+const { createTab } = useTabStore();
+
 onMounted(() => {
   console.log('side bar mounted');
 });
 
 async function wamTest() {
-  const res = await window.electronAPI.invoke('cppCalc', { a: 4, b: 4 });
-  console.log(res);
+  // const res = await window.electronAPI.invoke('cppCalc', { a: 1920, b: 1080 });
+  // console.log(res);
+  createTab('Extension');
 }
 </script>
 

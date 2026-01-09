@@ -18,8 +18,8 @@ export const useSessionStore = defineStore('sessionStore', () => {
   });
 
   // 操作
-  const createSession = (type: EditorSessionType) => {
-    const session = markRaw(tabManagerInstance.createNewEditor(type));
+  const createSession = (type: EditorSessionType, args?: any) => {
+    const session = markRaw(tabManagerInstance.createNewEditor(type, args));
     editorSessions.value.push(session);
     activeSessionId.value = session.id;
     return session;

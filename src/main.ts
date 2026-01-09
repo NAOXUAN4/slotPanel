@@ -15,7 +15,7 @@ const createWindow = () => {
     height: 600,
     minWidth: 800,
     minHeight: 600,
-    titleBarStyle: 'hiddenInset', // 隐藏标题和选项卡，保留右侧控制按钮（macOS 最优）
+    titleBarStyle: 'hiddenInset', // 隐藏标题和选项卡，
     titleBarOverlay: {
       color: '#ffffff', // 标题栏背景色（与窗口背景一致）
       symbolColor: '#d31515ff', // 控制按钮颜色

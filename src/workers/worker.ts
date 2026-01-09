@@ -1,26 +1,33 @@
 import { parentPort, workerData } from 'worker_threads';
-const createMathModule = require('./wasm/calc_conv/conv');
+// const createMathModule = require('./wasm/calc_conv/conv');
+const createMathModule = require('./wasm/sleep/sleep');
 
 createMathModule().then(Module => {
   parentPort.on('message', task => {
     try {
       if (task.type === 'CAL') {
-        const { x, y } = task.payload;
-        const inputData = [];
-        for (let i = 0; i < x * y * 3; i++) {
-          inputData.push(Math.random());
-        }
+        // const { x, y } = task.payload;
+        // const inputData = [];
+        // for (let i = 0; i < x * y * 3; i++) {
+        //   inputData.push(Math.random());
+        // }
 
-        // 创建卷积核
-        const kernelData = Module.createGaussianKernelJS(3);
+        // // 创建卷积核
+        // const kernelData = Module.createGaussianKernelJS(3);
 
-        // 执行卷积
-        const result = Module.convolution3DFlatJS(inputData, x, y, kernelData, 3, 3);
+        // // 执行卷积
+        // const result = Module.convolution3DFlatJS(inputData, x, y, kernelData, 3, 3);
 
         // 发送回主线程
+        // parentPort.postMessage({
+        //   status: 'success',
+        //   result: Array.from(result), // 确保是可序列化的数组
+        // });
+
+        const res = Module.sleepTen();
         parentPort.postMessage({
           status: 'success',
-          result: Array.from(result), // 确保是可序列化的数组
+          result: res, // 确保是可序列化的数组
         });
       }
     } catch (error) {

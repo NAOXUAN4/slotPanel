@@ -10,8 +10,8 @@ export class TabManager {
    * tab中创建Editor
    * @param type EditorSessionType
    */
-  createNewEditor(type: EditorSessionType) {
-    const newsession = new EditorSession(type);
+  createNewEditor(type: EditorSessionType, args?: any) {
+    const newsession = new EditorSession(type, args);
     this.#tabs.push(newsession);
     this.#activeById(newsession.id); //打开即激活
     this.switchToById(this.#activeId);
